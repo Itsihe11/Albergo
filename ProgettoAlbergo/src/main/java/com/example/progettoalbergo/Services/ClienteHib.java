@@ -11,10 +11,10 @@ import com.example.progettoalbergo.Repository.ClienteRepository;
 @Service
 public class ClienteHib {
 	@Autowired
-	private ClienteRepository ClienteRepository;
+	private ClienteRepository clienteRepository;
 	
 	public List<Cliente> getAllClienti() {
-		return ClienteRepository.findAll();
+		return clienteRepository.findAll();
 	}
 
 }

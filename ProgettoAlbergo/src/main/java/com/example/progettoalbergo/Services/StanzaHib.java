@@ -13,29 +13,29 @@ import com.example.progettoalbergo.Repository.StanzaRepository;
 @Service
 public class StanzaHib {
 	@Autowired
-	private StanzaRepository StanzaRepository;
+	private StanzaRepository stanzaRepository;
 	
 	public List<Stanza> getAllStanze() {
-		return StanzaRepository.findAll();
+		return stanzaRepository.findAll();
 	}
 	
 	
 	public void addStanza(Stanza nuovoStanza) {
-		StanzaRepository.save(nuovoStanza);
+		stanzaRepository.save(nuovoStanza);
 	}
 	
 	
 	public void cancellaStanza(Long id) {
-		StanzaRepository.deleteById(id);
+		stanzaRepository.deleteById(id);
 	}
 	
 	public Optional<Stanza> modificaStanza(Long id, Stanza stanzaDettagli) {
-        return StanzaRepository.findById(id).map(stanzaEsistente -> {
+        return stanzaRepository.findById(id).map(stanzaEsistente -> {
             stanzaEsistente.setNumeroStanza(stanzaDettagli.getNumeroStanza());
             stanzaEsistente.setTipologia(stanzaDettagli.getTipologia());
             stanzaEsistente.setStatus(stanzaDettagli.getStatus());
             
-            return StanzaRepository.save(stanzaEsistente);
+            return stanzaRepository.save(stanzaEsistente);
         });
     }
 }
