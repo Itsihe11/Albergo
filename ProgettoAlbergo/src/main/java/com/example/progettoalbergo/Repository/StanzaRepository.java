@@ -13,20 +13,6 @@ import com.example.progettoalbergo.Model.Stanza;
 @Repository
 public interface StanzaRepository extends JpaRepository<Stanza, Long> {
 
-    @Query("""
-        SELECT s FROM Stanza s
-        WHERE s.status = 'disponibile'
-          AND s.tipologia.capienza >= :numeroOspiti
-          AND NOT EXISTS (
-              SELECT ps FROM PrenotazioneStanza ps
-              WHERE ps.stanza = s
-                AND ps.checkin < :checkout
-                AND ps.checkout > :checkin
-          )
-        """)
-    List<Stanza> trovaStanzeDisponibili(
-        @Param("checkin") LocalDate checkin,
-        @Param("checkout") LocalDate checkout,
-        @Param("numeroOspiti") Integer numeroOspiti
-    );
+	List<Stanza> findStanzeDisponibili(LocalDate checkIn, LocalDate checkOut);
+
 }
