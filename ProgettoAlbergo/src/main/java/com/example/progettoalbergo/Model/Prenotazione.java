@@ -5,25 +5,42 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name ="prenotazione")
+@Table(name = "prenotazione")
 public class Prenotazione {
-	
+
 	@Id
 	private String codice_prenotazione;
-	
+
 	private String email;
-	
+
 	private String pin;
-	
+
 	private String tipo_prenotazione;
-	
+
 	private String dove_prenotazione;
-	
+
 	private double costo_totale;
-	
+
 	private double deposito;
-	
+
 	private String tipo_pagamento;
+
+	public Prenotazione() {
+
+	}
+
+	public Prenotazione(String codice_prenotazione, String email, String pin, String tipo_prenotazione,
+			String dove_prenotazione, double costo_totale, double deposito, String tipo_pagamento) {
+		super();
+		setCodice_prenotazione(codice_prenotazione);
+		setEmail(email);
+		setPin(pin);
+		setTipo_prenotazione(tipo_prenotazione);
+		setDove_prenotazione(dove_prenotazione);
+		setCosto_totale(costo_totale);
+		setDeposito(deposito);
+		setTipo_pagamento(tipo_pagamento);
+	}
 
 	public String getCodice_prenotazione() {
 		return codice_prenotazione;
@@ -88,9 +105,5 @@ public class Prenotazione {
 	public void setTipo_pagamento(String tipo_pagamento) {
 		this.tipo_pagamento = tipo_pagamento;
 	}
-	
-	
-	
-	
 
 }

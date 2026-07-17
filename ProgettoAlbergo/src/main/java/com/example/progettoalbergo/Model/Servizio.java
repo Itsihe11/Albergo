@@ -16,6 +16,18 @@ public class Servizio {
 	private String servizi;
 	
 	private double prezzi;
+	
+	public Servizio() {
+		
+	}
+
+	public Servizio(Long id_prenotazione_servizi, String codice_prenotazione, String servizi, double prezzi) {
+		super();
+		setId_prenotazione_servizi(id_prenotazione_servizi);
+		setCodice_prenotazione(codice_prenotazione);
+		setServizi(servizi);
+		setPrezzi(prezzi);
+	}
 
 	public Long getId_prenotazione_servizi() {
 		return id_prenotazione_servizi;

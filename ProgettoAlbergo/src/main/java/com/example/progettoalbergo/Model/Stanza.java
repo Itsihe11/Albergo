@@ -19,11 +19,22 @@ public class Stanza {
 	@Column(name = "numero_stanza")
 	private String numeroStanza;
 
-	@ManyToOne
 	@JoinColumn(name = "id_tipo")
 	private TipologiaStanza tipologia;
-	
+
 	private String status;
+
+	public Stanza() {
+
+	}
+
+	public Stanza(Long id, String numeroStanza, TipologiaStanza tipologia, String status) {
+		super();
+		setId(id);
+		setNumeroStanza(numeroStanza);
+		setTipologia(tipologia);
+		setStatus(status);
+	}
 
 	public String getStatus() {
 		return status;
@@ -56,6 +67,5 @@ public class Stanza {
 	public void setTipologia(TipologiaStanza tipologia) {
 		this.tipologia = tipologia;
 	}
-	
-	
+
 }

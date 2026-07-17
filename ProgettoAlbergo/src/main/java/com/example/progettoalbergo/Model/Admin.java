@@ -5,15 +5,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="admin")
+@Table(name = "admin")
 public class Admin {
-	
+
 	@Id
 	private Long id_admin;
-	
+
 	private String username;
-	
+
 	private String password;
+
+	public Admin() {
+
+	}
+
+	public Admin(Long id_admin, String username, String password) {
+		super();
+		setId_admin(id_admin);
+		setUsername(username);
+		setPassword(password);
+	}
 
 	public Long getId_admin() {
 		return id_admin;
@@ -38,7 +49,5 @@ public class Admin {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
 
 }
