@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class PrenotazioneHib {
 	private PrenotazioneRepository prenotazioneRepository;
 	
 
+
 	public List<Prenotazione> getAllPrenotazione() {
 		return prenotazioneRepository.findAll();
 	}
@@ -45,34 +47,34 @@ public class PrenotazioneHib {
     }
     
     @Transactional
-    public Prenotazione creaPrenotazione(Long idStanza, LocalDate checkIn, LocalDate checkOut, String pensione, BigDecimal pensioneCosto ) {
-    	
-    	List<Stanza> libere = stanzaRepository.findStanzeDisponibili(checkIn, checkOut);
-    	
-    	boolean isDisponibile= libere.stream().anyMatch(s-> s.getId().equals(idStanza));
-    	
-    	Stanza stanza = stanzaRepository.findById(idStanza)
-                .orElseThrow(() -> new IllegalArgumentException("Stanza non trovata con ID: " + idStanza));
+    public Prenotazione creaPrenotazione(Long idStanza,
+                                         LocalDate checkIn,
+                                         LocalDate checkOut,
+                                         String pensione,
+                                         BigDecimal costoPensione,
 
-       
-        Prenotazione prenotazione = new Prenotazione();
-        
+                                         String tipoPrenotazione,
+                                         String dovePrenotazione,
+                                         Double costoTotale,
+                                         Double deposito,
+                                         String tipoPagamento) {
+    	Prenotazione prenotazione = new Prenotazione();
 
-        
-        PrenotazioneStanza dettaglio = new PrenotazioneStanza();
-        dettaglio.setStanza(stanza);
-        dettaglio.setCheckin(checkIn);
-        dettaglio.setCheckout(checkOut);
-        dettaglio.setPensione(pensione);
-        dettaglio.setCostoPensione(costoPensione);
+    	prenotazione.setCodice_prenotazione(UUID.randomUUID().toString());
+    	prenotazione.setTipo_prenotazione(tipoPrenotazione);
+    	prenotazione.setDove_prenotazione(dovePrenotazione);
 
-       
-        prenotazione.addStanza(dettaglio);
+    	if (costoTotale != null) {
+    	    prenotazione.setCosto_totale(costoTotale);
+    	}
 
-        
-        return prenotazioneRepository.save(prenotazione);
-    
+    	if (dovePrenotazione.equalsIgnoreCase("online")) {
+    	    prenotazione.setDeposito(costoTotale+(costoTotale/10));
+    	}
+
+    	prenotazione.setTipo_pagamento(tipoPagamento);
+
+    	return prenotazioneRepository.save(prenotazione);
     }
-	
 
 }

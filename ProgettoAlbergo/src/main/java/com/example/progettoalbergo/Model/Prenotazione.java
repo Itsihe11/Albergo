@@ -19,9 +19,9 @@ public class Prenotazione {
 
 	private String dove_prenotazione;
 
-	private double costo_totale;
+	private Double costo_totale;
 
-	private double deposito;
+	private Double deposito;
 
 	private String tipo_pagamento;
 
@@ -30,7 +30,7 @@ public class Prenotazione {
 	}
 
 	public Prenotazione(String codice_prenotazione, String email, String pin, String tipo_prenotazione,
-			String dove_prenotazione, double costo_totale, double deposito, String tipo_pagamento) {
+			String dove_prenotazione, Double costo_totale, Double deposito, String tipo_pagamento) {
 		super();
 		setCodice_prenotazione(codice_prenotazione);
 		setEmail(email);
@@ -86,7 +86,7 @@ public class Prenotazione {
 		return costo_totale;
 	}
 
-	public void setCosto_totale(double costo_totale) {
+	public void setCosto_totale(Double costo_totale) {
 		this.costo_totale = costo_totale;
 	}
 
@@ -94,7 +94,7 @@ public class Prenotazione {
 		return deposito;
 	}
 
-	public void setDeposito(double deposito) {
+	public void setDeposito(Double deposito) {
 		this.deposito = deposito;
 	}
 
