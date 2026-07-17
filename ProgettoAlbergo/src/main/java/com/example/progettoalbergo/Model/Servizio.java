@@ -15,13 +15,13 @@ public class Servizio {
 	
 	private String servizi;
 	
-	private double prezzi;
+	private Double prezzi;
 	
 	public Servizio() {
 		
 	}
 
-	public Servizio(Long id_prenotazione_servizi, String codice_prenotazione, String servizi, double prezzi) {
+	public Servizio(Long id_prenotazione_servizi, String codice_prenotazione, String servizi, Double prezzi) {
 		super();
 		setId_prenotazione_servizi(id_prenotazione_servizi);
 		setCodice_prenotazione(codice_prenotazione);
@@ -57,7 +57,7 @@ public class Servizio {
 		return prezzi;
 	}
 
-	public void setPrezzi(double prezzi) {
+	public void setPrezzi(Double prezzi) {
 		this.prezzi = prezzi;
 	}
 	
