@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.progettoalbergo.Model.TipologiaStanza;
 
 @Repository
-public interface TipologiaStanzaRepository extends JpaRepository<TipologiaStanza, Integer>{
+public interface TipologiaStanzaRepository extends JpaRepository<TipologiaStanza, Long>{
 
 }
