@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Table(name = "tipologie_stanza")
 public class TipologiaStanza {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String nome;
     private BigDecimal prezzo;
     private String descrizione;
