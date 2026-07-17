@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.example.progettoalbergo.Model.Stanza;
 
 public record StanzaDisponibileDTO(
-	    Integer id,
+		Long id,
 	    String numeroStanza,
 	    String tipologiaNome,
 	    BigDecimal prezzoNotte,

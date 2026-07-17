@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 public class Stanza {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	@Column(name = "numero_stanza")
 	private String numeroStanza;
@@ -33,11 +33,11 @@ public class Stanza {
 		this.status = status;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
