@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.progettoalbergo.Model.Stanza;
 
 @Repository
-public interface StanzaRepository extends JpaRepository<Stanza, Integer> {
+public interface StanzaRepository extends JpaRepository<Stanza, Long> {
 
     @Query("""
         SELECT s FROM Stanza s
