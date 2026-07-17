@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 import com.example.progettoalbergo.Model.Ospite;
 import com.example.progettoalbergo.Model.Prenotazione;
 import com.example.progettoalbergo.Model.PrenotazioneStanza;
+import com.example.progettoalbergo.Model.Servizio;
 import com.example.progettoalbergo.Model.Stanza;
 import com.example.progettoalbergo.Repository.OspiteRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneStanzaRepository;
+import com.example.progettoalbergo.Repository.ServizioRepository;
 import com.example.progettoalbergo.Repository.StanzaRepository;
 
 import jakarta.transaction.Transactional;
@@ -34,6 +36,9 @@ public class PrenotazioneHib {
 	
 	@Autowired
 	private OspiteRepository ospiteRepository;
+	
+	@Autowired
+	private ServizioRepository servizioRepository;
 
 
 	public List<Prenotazione> getAllPrenotazione() {
@@ -60,68 +65,79 @@ public class PrenotazioneHib {
                                          Double costoTotale,
                                          Double deposito,
                                          String tipoPagamento,
-                                         List<Ospite> ospiti) {
-        if (!checkOut.isAfter(checkIn)) {
-            throw new IllegalArgumentException(
-                    "La data di checkout deve essere successiva al check-in.");
+                                         List<Ospite> ospiti,
+                                         List<Servizio> serviziAggiuntivi) {
+
+        String codicePrenotazione = UUID.randomUUID().toString();
+        double calcoloCostoTotale = (costoTotale != null) ? costoTotale : 0.0;
+
+        if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)) {
+            calcoloCostoTotale += 200.0;
         }
 
-        Stanza stanza = stanzaRepository.findById(idStanza)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Stanza non trovata con ID: " + idStanza));
+        boolean includeStanza = "stanza".equalsIgnoreCase(tipoPrenotazione) || "stanza+spa".equalsIgnoreCase(tipoPrenotazione);
+        Stanza stanza = null;
 
-        boolean disponibile = stanzaRepository
-                .findStanzeDisponibili(checkIn, checkOut)
-                .stream()
-                .anyMatch(s -> s.getId().equals(idStanza));
+        if (includeStanza) {
+            if (idStanza == null || checkIn == null || checkOut == null) {
+                throw new IllegalArgumentException("Dati stanza o date mancanti per una prenotazione di tipo stanza.");
+            }
+            if (!checkOut.isAfter(checkIn)) {
+                throw new IllegalArgumentException("La data di checkout deve essere successiva al check-in.");
+            }
 
-        if (!disponibile) {
-            throw new IllegalArgumentException(
-                    "La stanza non è disponibile nel periodo selezionato.");
+            stanza = stanzaRepository.findById(idStanza)
+                    .orElseThrow(() -> new IllegalArgumentException("Stanza non trovata con ID: " + idStanza));
+
+            boolean disponibile = stanzaRepository
+                    .findStanzeDisponibili(checkIn, checkOut)
+                    .stream()
+                    .anyMatch(s -> s.getId().equals(idStanza));
+
+            if (!disponibile) {
+                throw new IllegalArgumentException("La stanza non è disponibile nel periodo selezionato.");
+            }
         }
 
         Prenotazione prenotazione = new Prenotazione();
-
-        prenotazione.setCodice_prenotazione(UUID.randomUUID().toString());
+        prenotazione.setCodice_prenotazione(codicePrenotazione);
         prenotazione.setTipo_prenotazione(tipoPrenotazione);
         prenotazione.setDove_prenotazione(dovePrenotazione);
-
-        if (costoTotale != null) {
-            prenotazione.setCosto_totale(costoTotale);
-        }
-
-        if ("online".equalsIgnoreCase(dovePrenotazione) && costoTotale != null) {
-            prenotazione.setDeposito(costoTotale + (costoTotale / 10));
-        }
-
         prenotazione.setTipo_pagamento(tipoPagamento);
 
-        
+        if ("online".equalsIgnoreCase(dovePrenotazione)) {
+            prenotazione.setDeposito(calcoloCostoTotale + (calcoloCostoTotale / 10));
+        } else {
+            prenotazione.setDeposito(deposito);
+        }
+        prenotazione.setCosto_totale(calcoloCostoTotale);
+
         prenotazioneRepository.save(prenotazione);
 
-   
+        if (includeStanza && stanza != null) {
+            PrenotazioneStanza dettaglio = new PrenotazioneStanza();
+            dettaglio.setPrenotazione(prenotazione);
+            dettaglio.setStanza(stanza);
+            dettaglio.setCheckin(checkIn);
+            dettaglio.setCheckout(checkOut);
+            dettaglio.setPensione(pensione);
+            dettaglio.setCostoPensione(costoPensione);
+            prenotazioneStanzaRepository.save(dettaglio);
+        }
+
         if (ospiti != null && !ospiti.isEmpty()) {
-
             for (Ospite ospite : ospiti) {
-                ospite.setCodice_prenotazione(
-                        prenotazione.getCodice_prenotazione()
-                );
+                ospite.setCodice_prenotazione(codicePrenotazione);
             }
-
             ospiteRepository.saveAll(ospiti);
         }
-       
-        PrenotazioneStanza dettaglio = new PrenotazioneStanza();
 
-        dettaglio.setPrenotazione(prenotazione);
-        dettaglio.setStanza(stanza);
-        dettaglio.setCheckin(checkIn);
-        dettaglio.setCheckout(checkOut);
-        dettaglio.setPensione(pensione);
-        dettaglio.setCostoPensione(costoPensione);
-
-        prenotazioneStanzaRepository.save(dettaglio);
-
+        if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
+            for (Servizio servizio : serviziAggiuntivi) {
+                servizio.setCodice_prenotazione(codicePrenotazione);
+            }
+            servizioRepository.saveAll(serviziAggiuntivi);
+        }
 
         return prenotazione;
     }
