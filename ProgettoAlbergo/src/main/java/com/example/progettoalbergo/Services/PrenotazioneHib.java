@@ -104,7 +104,11 @@ public class PrenotazioneHib {
 
             calcoloCostoTotale = stanza.getTipologia().getPrezzo().doubleValue() * numeroNotti;
         }
-
+        
+        if (costoPensione != null) {
+            calcoloCostoTotale += costoPensione.doubleValue();
+        }
+        
         if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
             for (Servizio servizio : serviziAggiuntivi) {
                 servizio.setCodice_prenotazione(codicePrenotazione);
