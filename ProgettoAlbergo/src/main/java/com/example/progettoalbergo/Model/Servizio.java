@@ -56,7 +56,7 @@ public class Servizio {
 		this.servizi = servizi;
 	}
 
-	public double getPrezzi() {
+	public Double getPrezzi() {
 		return prezzi;
 	}
 

@@ -111,10 +111,8 @@ public class PrenotazioneHib {
         
         if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
             for (Servizio servizio : serviziAggiuntivi) {
-                servizio.setCodice_prenotazione(codicePrenotazione);
                 calcoloCostoTotale += servizio.getPrezzi();
             }
-            servizioRepository.saveAll(serviziAggiuntivi);
         }
 
         
@@ -132,6 +130,13 @@ public class PrenotazioneHib {
         prenotazione.setCosto_totale(calcoloCostoTotale);
 
         prenotazioneRepository.save(prenotazione);
+        
+        if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
+            for (Servizio servizio : serviziAggiuntivi) {
+                servizio.setCodice_prenotazione(codicePrenotazione);
+            }
+            servizioRepository.saveAll(serviziAggiuntivi);
+        }
 
         if (includeStanza && stanza != null) {
             PrenotazioneStanza dettaglio = new PrenotazioneStanza();
@@ -142,6 +147,7 @@ public class PrenotazioneHib {
             dettaglio.setPensione(pensione);
             dettaglio.setCostoPensione(costoPensione);
             prenotazioneStanzaRepository.save(dettaglio);
+            stanzaRepository.save(stanza);
         }
 
         if (ospiti != null && !ospiti.isEmpty()) {
