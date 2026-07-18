@@ -3,6 +3,8 @@ package com.example.progettoalbergo.Model;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -11,21 +13,24 @@ import jakarta.persistence.Table;
 public class Ospite {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_ospite;
 
 	private String codicePrenotazione;
 	private String nome;
+	private String cognome;
 	private Date datanascita;
 
 	public Ospite() {
 
 	}
 
-	public Ospite(Long id_ospite, String codicePrenotazione, String nome, Date datanascita) {
+	public Ospite(Long id_ospite, String codicePrenotazione, String nome,String cognome, Date datanascita) {
 		super();
 		setId_ospite(id_ospite);
 		setcodicePrenotazione(codicePrenotazione);
 		setNome(nome);
+		setCognome(cognome);
 		setDatanascita(datanascita);
 	}
 
@@ -52,6 +57,16 @@ public class Ospite {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+	
+	
+
+	public String getCognome() {
+		return cognome;
+	}
+
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
+	}
 
 	public Date getDatanascita() {
 		return datanascita;
@@ -60,5 +75,6 @@ public class Ospite {
 	public void setDatanascita(Date datanascita) {
 		this.datanascita = datanascita;
 	}
+	
 
 }
