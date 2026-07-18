@@ -62,7 +62,6 @@ public class PrenotazioneHib {
                                          BigDecimal costoPensione,
                                          String tipoPrenotazione,
                                          String dovePrenotazione,
-                                         Double deposito,
                                          String tipoPagamento,
                                          List<Ospite> ospiti,
                                          List<Servizio> serviziAggiuntivi) {
@@ -115,7 +114,7 @@ public class PrenotazioneHib {
         if ("online".equalsIgnoreCase(dovePrenotazione)) {
             prenotazione.setDeposito(calcoloCostoTotale / 10);
         } else {
-            prenotazione.setDeposito(deposito);
+            prenotazione.setDeposito(0.0);
         }
         prenotazione.setCosto_totale(calcoloCostoTotale);
 

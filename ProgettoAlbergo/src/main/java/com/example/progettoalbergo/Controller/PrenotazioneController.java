@@ -49,8 +49,6 @@ public class PrenotazioneController {
 	            request.getCostoPensione(),
 	            request.getTipoPrenotazione(),
 	            request.getDovePrenotazione(),
-	            request.getCostoTotale(),
-	            request.getDeposito(),
 	            request.getTipoPagamento(),
 	            request.getOspiti(),
 	            request.getServiziAggiuntivi()
