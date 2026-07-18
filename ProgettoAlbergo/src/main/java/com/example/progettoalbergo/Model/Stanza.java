@@ -18,7 +18,8 @@ public class Stanza {
 
 	@Column(name = "numero_stanza")
 	private String numeroStanza;
-
+	
+	@ManyToOne
 	@JoinColumn(name = "id_tipo")
 	private TipologiaStanza tipologia;
 

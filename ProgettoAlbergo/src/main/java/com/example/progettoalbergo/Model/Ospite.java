@@ -13,7 +13,7 @@ public class Ospite {
 	@Id
 	private Long id_ospite;
 
-	private String codice_prenotazione;
+	private String codicePrenotazione;
 	private String nome;
 	private Date datanascita;
 
@@ -21,10 +21,10 @@ public class Ospite {
 
 	}
 
-	public Ospite(Long id_ospite, String codice_prenotazione, String nome, Date datanascita) {
+	public Ospite(Long id_ospite, String codicePrenotazione, String nome, Date datanascita) {
 		super();
 		setId_ospite(id_ospite);
-		setCodice_prenotazione(codice_prenotazione);
+		setcodicePrenotazione(codicePrenotazione);
 		setNome(nome);
 		setDatanascita(datanascita);
 	}
@@ -37,12 +37,12 @@ public class Ospite {
 		this.id_ospite = id_ospite;
 	}
 
-	public String getCodice_prenotazione() {
-		return codice_prenotazione;
+	public String getcodicePrenotazione() {
+		return codicePrenotazione;
 	}
 
-	public void setCodice_prenotazione(String codice_prenotazione) {
-		this.codice_prenotazione = codice_prenotazione;
+	public void setcodicePrenotazione(String codicePrenotazione) {
+		this.codicePrenotazione = codicePrenotazione;
 	}
 
 	public String getNome() {

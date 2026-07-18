@@ -31,7 +31,7 @@ public class OspiteHib {
 	
 	public Optional<Ospite> modificaOspite(Long id, Ospite OspiteDettagli) {
         return ospiteRepository.findById(id).map(OspiteEsistente -> {
-        	OspiteEsistente.setCodice_prenotazione(OspiteDettagli.getCodice_prenotazione());
+        	OspiteEsistente.setcodicePrenotazione(OspiteDettagli.getcodicePrenotazione());
         	OspiteEsistente.setNome(OspiteDettagli.getNome());
         	OspiteEsistente.setDatanascita(OspiteDettagli.getDatanascita());
             

@@ -106,7 +106,7 @@ public class PrenotazioneHib {
         prenotazione.setTipo_pagamento(tipoPagamento);
 
         if ("online".equalsIgnoreCase(dovePrenotazione)) {
-            prenotazione.setDeposito(calcoloCostoTotale + (calcoloCostoTotale / 10));
+            prenotazione.setDeposito(calcoloCostoTotale / 10);
         } else {
             prenotazione.setDeposito(deposito);
         }
@@ -127,7 +127,7 @@ public class PrenotazioneHib {
 
         if (ospiti != null && !ospiti.isEmpty()) {
             for (Ospite ospite : ospiti) {
-                ospite.setCodice_prenotazione(codicePrenotazione);
+                ospite.setcodicePrenotazione(codicePrenotazione);
             }
             ospiteRepository.saveAll(ospiti);
         }
@@ -177,7 +177,7 @@ public class PrenotazioneHib {
             if (nuoviOspiti != null && !nuoviOspiti.isEmpty()) {
 
                 for (Ospite ospite : nuoviOspiti) {
-                    ospite.setCodice_prenotazione(codice);
+                    ospite.setcodicePrenotazione(codice);
                 }
 
                 ospiteRepository.saveAll(nuoviOspiti);

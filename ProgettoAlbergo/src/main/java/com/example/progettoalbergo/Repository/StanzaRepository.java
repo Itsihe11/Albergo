@@ -13,6 +13,10 @@ import com.example.progettoalbergo.Model.Stanza;
 @Repository
 public interface StanzaRepository extends JpaRepository<Stanza, Long> {
 
-	List<Stanza> findStanzeDisponibili(LocalDate checkIn, LocalDate checkOut);
+	@Query("SELECT s FROM Stanza s WHERE s.id NOT IN (" +
+	           "SELECT ps.stanza.id FROM PrenotazioneStanza ps " +
+	           "WHERE ps.checkin < :checkOut AND ps.checkout > :checkIn)")
+	    List<Stanza> findStanzeDisponibili(@Param("checkIn") LocalDate checkIn, 
+	                                       @Param("checkOut") LocalDate checkOut);
 
 }
