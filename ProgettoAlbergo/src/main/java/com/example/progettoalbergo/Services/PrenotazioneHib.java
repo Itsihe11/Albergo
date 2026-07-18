@@ -62,15 +62,14 @@ public class PrenotazioneHib {
                                          BigDecimal costoPensione,
                                          String tipoPrenotazione,
                                          String dovePrenotazione,
-                                         Double costoTotale,
                                          Double deposito,
                                          String tipoPagamento,
                                          List<Ospite> ospiti,
                                          List<Servizio> serviziAggiuntivi) {
 
         String codicePrenotazione = UUID.randomUUID().toString();
-        double calcoloCostoTotale = (costoTotale != null) ? costoTotale : 0.0;
-
+        double calcoloCostoTotale = 0.0;
+        
         if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)) {
             calcoloCostoTotale += 200.0;
         }
@@ -93,10 +92,18 @@ public class PrenotazioneHib {
                     .findStanzeDisponibili(checkIn, checkOut)
                     .stream()
                     .anyMatch(s -> s.getId().equals(idStanza));
+            
+            
 
             if (!disponibile) {
                 throw new IllegalArgumentException("La stanza non è disponibile nel periodo selezionato.");
+                
+                
             }
+            
+            long numeroNotti = java.time.temporal.ChronoUnit.DAYS.between(checkIn, checkOut);
+
+            calcoloCostoTotale = stanza.getTipologia().getPrezzo().doubleValue() * numeroNotti;
         }
 
         Prenotazione prenotazione = new Prenotazione();
