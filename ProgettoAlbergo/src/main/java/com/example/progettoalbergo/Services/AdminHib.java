@@ -38,4 +38,31 @@ public class AdminHib {
         });
     }
 	
+    public String login(String username, String password){
+
+
+        Admin admin =
+        adminRepository.findByUsername(username);
+
+
+
+        if(admin == null){
+
+            throw new IllegalArgumentException(
+                    "Admin non trovato");
+        }
+
+
+
+        if(!admin.getPassword().equals(password)){
+
+            throw new IllegalArgumentException(
+                    "Password errata");
+        }
+
+
+        return "Login effettuato";
+
+    }
+	
 }

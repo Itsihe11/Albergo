@@ -9,4 +9,5 @@ import com.example.progettoalbergo.Model.Admin;
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Long>{
 
+	Admin findByUsername(String username);
 }
