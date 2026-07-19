@@ -67,12 +67,37 @@ public class PrenotazioneHib {
                                          List<Servizio> serviziAggiuntivi) {
 
         String codicePrenotazione = UUID.randomUUID().toString();
-        double calcoloCostoTotale = 0.0;
         
-        if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)) {
-            calcoloCostoTotale += 200.0;
+        if("online".equalsIgnoreCase(dovePrenotazione)){
+
+            if(!"carta".equalsIgnoreCase(tipoPagamento)
+               &&
+               !"bonifico".equalsIgnoreCase(tipoPagamento)){
+
+                throw new IllegalArgumentException(
+                "Online consentiti solo carta o bonifico");
+            }
         }
 
+
+        if("sede".equalsIgnoreCase(dovePrenotazione)){
+
+            if(!"carta".equalsIgnoreCase(tipoPagamento)){
+
+                throw new IllegalArgumentException(
+                "In sede è consentito solo pagamento carta");
+            }
+        }
+        
+        if (ospiti == null || ospiti.isEmpty()) {
+            throw new IllegalArgumentException(
+                "È necessario inserire almeno un ospite."
+            );
+        }
+        
+        double calcoloCostoTotale = 0.0;
+        
+        
         boolean includeStanza = "stanza".equalsIgnoreCase(tipoPrenotazione) || "stanza+spa".equalsIgnoreCase(tipoPrenotazione);
         Stanza stanza = null;
 
@@ -92,6 +117,19 @@ public class PrenotazioneHib {
                     .stream()
                     .anyMatch(s -> s.getId().equals(idStanza));
             
+            int numeroOspiti = 0;
+
+            if(ospiti != null){
+                numeroOspiti = ospiti.size();
+            }
+            
+
+            if(numeroOspiti > stanza.getTipologia().getCapienza()){
+
+                throw new IllegalArgumentException(
+                    "Numero ospiti superiore alla capienza della stanza"
+                );
+            }
             
 
             if (!disponibile) {
@@ -109,12 +147,25 @@ public class PrenotazioneHib {
             calcoloCostoTotale += costoPensione.doubleValue();
         }
         
+
         if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
+
             for (Servizio servizio : serviziAggiuntivi) {
+
+                if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)
+                        && "SPA".equalsIgnoreCase(servizio.getServizi())) {
+                    continue;
+                }
+
                 calcoloCostoTotale += servizio.getPrezzi();
             }
         }
 
+        if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)) {
+            calcoloCostoTotale += 200;
+        }
+        
+        
         
         Prenotazione prenotazione = new Prenotazione();
         prenotazione.setCodice_prenotazione(codicePrenotazione);
@@ -128,6 +179,9 @@ public class PrenotazioneHib {
             prenotazione.setDeposito(0.0);
         }
         prenotazione.setCosto_totale(calcoloCostoTotale);
+        
+        prenotazione.setStato("PENDENTE");
+        prenotazione.setPagato(false);
 
         prenotazioneRepository.save(prenotazione);
         
@@ -176,10 +230,13 @@ public class PrenotazioneHib {
       
         if (modificaOspiti) {
 
-            if (email == null || pin == null) {
-                throw new IllegalArgumentException(
-                        "Email e PIN obbligatori per modificare gli ospiti.");
-            }
+
+            if (email == null || email.isBlank() ||
+            	    pin == null || pin.isBlank()) {
+
+            	    throw new IllegalArgumentException(
+            	        "Email e PIN sono obbligatori per modificare gli ospiti.");
+            	}
 
             
             prenotazione.setEmail(email);
@@ -212,9 +269,61 @@ public class PrenotazioneHib {
 
         ospiteRepository.deleteAll(ospiti);
 
-        prenotazioneRepository.delete(prenotazione);
+        prenotazione.setStato("ANNULLATA");
 
-        return "Prenotazione cancellata.";
+        prenotazioneRepository.save(prenotazione);
+
+        return "Prenotazione annullata. La caparra rimane all'hotel.";
+
+    }
+    
+    @Transactional
+    public String checkIn(String codice){
+
+        Prenotazione p =
+        prenotazioneRepository.findById(codice)
+        .orElseThrow();
+
+        if(!p.getStato().equals("PENDENTE")
+           &&
+           !p.getStato().equals("CONFERMATA")){
+
+            throw new IllegalArgumentException(
+            "Prenotazione non valida");
+        }
+
+
+        p.setStato("CHECK_IN");
+
+        prenotazioneRepository.save(p);
+
+        return "Check-in effettuato";
+    }
+    
+    @Transactional
+    public String checkOut(String codice){
+
+        Prenotazione p =
+        prenotazioneRepository.findById(codice)
+        .orElseThrow();
+
+
+        if(!p.getStato().equals("CHECK_IN")){
+            throw new IllegalArgumentException(
+            "Cliente non presente");
+        }
+
+
+        p.setPagato(true);
+        
+
+        p.setStato("COMPLETATA");
+
+
+        prenotazioneRepository.save(p);
+
+
+        return "Checkout completato e pagamento registrato";
     }
 
 }

@@ -8,7 +8,7 @@ import com.example.progettoalbergo.Model.Ospite;
 import com.example.progettoalbergo.Model.Servizio;
 
 public class PrenotazioneRequest {
-	
+	private Long idStanza;
     private LocalDate checkin;
     private LocalDate checkout;
 
@@ -25,6 +25,15 @@ public class PrenotazioneRequest {
 
     private List<Ospite> ospiti;
     private List<Servizio> serviziAggiuntivi;
+    
+    
+    
+	public Long getIdStanza() {
+		return idStanza;
+	}
+	public void setIdStanza(Long idStanza) {
+		this.idStanza = idStanza;
+	}
 	public LocalDate getCheckin() {
 		return checkin;
 	}
@@ -92,6 +101,7 @@ public class PrenotazioneRequest {
 		this.serviziAggiuntivi = serviziAggiuntivi;
 	}
 
+	
 
 
 }

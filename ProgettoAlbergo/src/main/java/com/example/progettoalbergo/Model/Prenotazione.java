@@ -24,6 +24,10 @@ public class Prenotazione {
 	private Double deposito;
 
 	private String tipo_pagamento;
+	
+	private String stato;
+
+	private Boolean pagato;
 
 	public Prenotazione() {
 
@@ -106,4 +110,22 @@ public class Prenotazione {
 		this.tipo_pagamento = tipo_pagamento;
 	}
 
+	public String getStato() {
+		return stato;
+	}
+
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
+
+	public Boolean getPagato() {
+		return pagato;
+	}
+
+	public void setPagato(Boolean pagato) {
+		this.pagato = pagato;
+	}
+
+	
+	
 }
