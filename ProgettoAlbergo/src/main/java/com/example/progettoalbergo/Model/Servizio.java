@@ -12,7 +12,7 @@ public class Servizio {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_prenotazione_servizi;
+	private Long id;
 	
 	private String codice_prenotazione;
 	
@@ -24,20 +24,20 @@ public class Servizio {
 		
 	}
 
-	public Servizio(Long id_prenotazione_servizi, String codice_prenotazione, String servizi, Double prezzi) {
+	public Servizio(Long id, String codice_prenotazione, String servizi, Double prezzi) {
 		super();
-		setId_prenotazione_servizi(id_prenotazione_servizi);
+		setId_prenotazione_servizi(id);
 		setCodice_prenotazione(codice_prenotazione);
 		setServizi(servizi);
 		setPrezzi(prezzi);
 	}
 
 	public Long getId_prenotazione_servizi() {
-		return id_prenotazione_servizi;
+		return id;
 	}
 
-	public void setId_prenotazione_servizi(Long id_prenotazione_servizi) {
-		this.id_prenotazione_servizi = id_prenotazione_servizi;
+	public void setId_prenotazione_servizi(Long id) {
+		this.id = id;
 	}
 
 	public String getCodice_prenotazione() {

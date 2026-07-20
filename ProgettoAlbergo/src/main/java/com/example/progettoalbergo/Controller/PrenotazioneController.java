@@ -25,6 +25,8 @@ import com.example.progettoalbergo.Services.PrenotazioneHib;
 @RequestMapping("/api/prenotazione")
 public class PrenotazioneController {
 	
+	//DA FARE TABELLA PER LA PENSIONE 
+	
 	
 	@Autowired PrenotazioneHib prenotazioneDependancy;
 	

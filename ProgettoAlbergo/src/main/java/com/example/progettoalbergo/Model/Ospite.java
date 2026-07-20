@@ -14,7 +14,7 @@ public class Ospite {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_ospite;
+	private Long id;
 
 	private String codicePrenotazione;
 	private String nome;
@@ -25,9 +25,9 @@ public class Ospite {
 
 	}
 
-	public Ospite(Long id_ospite, String codicePrenotazione, String nome,String cognome, Date datanascita) {
+	public Ospite(Long id, String codicePrenotazione, String nome,String cognome, Date datanascita) {
 		super();
-		setId_ospite(id_ospite);
+		setId_ospite(id);
 		setcodicePrenotazione(codicePrenotazione);
 		setNome(nome);
 		setCognome(cognome);
@@ -35,11 +35,11 @@ public class Ospite {
 	}
 
 	public Long getId_ospite() {
-		return id_ospite;
+		return id;
 	}
 
-	public void setId_ospite(Long id_ospite) {
-		this.id_ospite = id_ospite;
+	public void setId_ospite(Long id) {
+		this.id= id;
 	}
 
 	public String getcodicePrenotazione() {

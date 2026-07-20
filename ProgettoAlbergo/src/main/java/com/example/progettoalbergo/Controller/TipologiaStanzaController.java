@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,15 +35,23 @@ public class TipologiaStanzaController {
 		return lista;
 
 	}
-	
-	@PostMapping("/datiStanza")
+
+	@PostMapping("/datiTipologia")
 	public String inserisciDati(@RequestBody TipologiaStanza nuovaTipologia) {
-		
+
 		TipologiaDependency.addTipologiaStanza(nuovaTipologia);
 
-		
-		return "tipologia inserita";
-		
+		return "Tipologia inserita";
+
+	}
+
+	@DeleteMapping("/cancellaTipologia")
+	public String cancellaTipologia(@PathVariable Long id) {
+
+		TipologiaDependency.cancellaTipologiaStanza(id);
+
+		return "Tipologia cancellata";
+
 	}
 
 }
