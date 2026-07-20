@@ -12,11 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.progettoalbergo.Model.Ospite;
 import com.example.progettoalbergo.Model.Prenotazione;
+import com.example.progettoalbergo.Model.PrenotazioneServizi;
 import com.example.progettoalbergo.Model.PrenotazioneStanza;
 import com.example.progettoalbergo.Model.Servizio;
 import com.example.progettoalbergo.Model.Stanza;
 import com.example.progettoalbergo.Repository.OspiteRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneRepository;
+import com.example.progettoalbergo.Repository.PrenotazioneServizioRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneStanzaRepository;
 import com.example.progettoalbergo.Repository.ServizioRepository;
 import com.example.progettoalbergo.Repository.StanzaRepository;
@@ -38,7 +40,7 @@ public class PrenotazioneHib {
 	private OspiteRepository ospiteRepository;
 	
 	@Autowired
-	private ServizioRepository servizioRepository;
+	private PrenotazioneServizioRepository servizioRepository;
 
 
 	public List<Prenotazione> getAllPrenotazione() {
@@ -64,7 +66,7 @@ public class PrenotazioneHib {
                                          String dovePrenotazione,
                                          String tipoPagamento,
                                          List<Ospite> ospiti,
-                                         List<Servizio> serviziAggiuntivi) {
+                                         List<PrenotazioneServizi> serviziAggiuntivi) {
 
         String codicePrenotazione = UUID.randomUUID().toString();
         
@@ -150,7 +152,7 @@ public class PrenotazioneHib {
 
         if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
 
-            for (Servizio servizio : serviziAggiuntivi) {
+            for (PrenotazioneServizi servizio : serviziAggiuntivi) {
 
                 if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione)
                         && "SPA".equalsIgnoreCase(servizio.getServizi())) {
@@ -186,7 +188,7 @@ public class PrenotazioneHib {
         prenotazioneRepository.save(prenotazione);
         
         if (serviziAggiuntivi != null && !serviziAggiuntivi.isEmpty()) {
-            for (Servizio servizio : serviziAggiuntivi) {
+            for (PrenotazioneServizi servizio : serviziAggiuntivi) {
                 servizio.setCodice_prenotazione(codicePrenotazione);
             }
             servizioRepository.saveAll(serviziAggiuntivi);

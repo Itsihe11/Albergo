@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.progettoalbergo.Model.Ospite;
+import com.example.progettoalbergo.Model.PrenotazioneServizi;
 import com.example.progettoalbergo.Model.Servizio;
 
 public class PrenotazioneRequest {
@@ -24,7 +25,7 @@ public class PrenotazioneRequest {
     private String tipoPagamento;
 
     private List<Ospite> ospiti;
-    private List<Servizio> serviziAggiuntivi;
+    private List<PrenotazioneServizi> serviziAggiuntivi;
     
     
     
@@ -94,10 +95,10 @@ public class PrenotazioneRequest {
 	public void setOspiti(List<Ospite> ospiti) {
 		this.ospiti = ospiti;
 	}
-	public List<Servizio> getServiziAggiuntivi() {
+	public List<PrenotazioneServizi> getServiziAggiuntivi() {
 		return serviziAggiuntivi;
 	}
-	public void setServiziAggiuntivi(List<Servizio> serviziAggiuntivi) {
+	public void setServiziAggiuntivi(List<PrenotazioneServizi> serviziAggiuntivi) {
 		this.serviziAggiuntivi = serviziAggiuntivi;
 	}
 

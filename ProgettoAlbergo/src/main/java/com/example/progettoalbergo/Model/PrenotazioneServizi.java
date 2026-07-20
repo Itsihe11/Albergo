@@ -7,8 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="servizi")
-public class Servizio {
+@Table(name="prenotazione_servizi")
+public class PrenotazioneServizi {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class Servizio {
 	
 	private Double prezzi;
 	
-	public Servizio() {
+	public PrenotazioneServizi() {
 		
 	}
 
-	public Servizio(Long id, String codice_prenotazione, String servizi, Double prezzi) {
+	public PrenotazioneServizi(Long id, String codice_prenotazione, String servizi, Double prezzi) {
 		super();
 		setId_prenotazione_servizi(id);
 		setCodice_prenotazione(codice_prenotazione);
