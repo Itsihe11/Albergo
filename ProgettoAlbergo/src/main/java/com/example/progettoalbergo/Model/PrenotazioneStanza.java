@@ -32,10 +32,20 @@ public class PrenotazioneStanza {
     private LocalDate checkin;
     private LocalDate checkout;
 
-    private String pensione;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pensione") 
+    private Pensione pensione;
 
-    @Column(name = "costo_pensione")
-    private BigDecimal costoPensione;
+
+    public Pensione getPensione() {
+        return pensione;
+    }
+
+    public void setPensione(Pensione pensione) {
+        this.pensione = pensione;
+    }
+
+
 
 	public Long getId() {
 		return id;
@@ -77,21 +87,7 @@ public class PrenotazioneStanza {
 		this.checkout = checkout;
 	}
 
-	public String getPensione() {
-		return pensione;
-	}
 
-	public void setPensione(String pensione) {
-		this.pensione = pensione;
-	}
-
-	public BigDecimal getCostoPensione() {
-		return costoPensione;
-	}
-
-	public void setCostoPensione(BigDecimal costoPensione) {
-		this.costoPensione = costoPensione;
-	}
 
     
 }

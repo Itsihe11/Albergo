@@ -1,6 +1,5 @@
 package com.example.progettoalbergo.Controller;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,86 +16,68 @@ import com.example.progettoalbergo.DTO.GestionePrenotazioneRequest;
 import com.example.progettoalbergo.DTO.PrenotazioneRequest;
 import com.example.progettoalbergo.Model.Ospite;
 import com.example.progettoalbergo.Model.Prenotazione;
-import com.example.progettoalbergo.Model.Servizio;
 import com.example.progettoalbergo.Model.Stanza;
 import com.example.progettoalbergo.Services.PrenotazioneHib;
 
 @RestController
 @RequestMapping("/api/prenotazione")
 public class PrenotazioneController {
-	
-	//DA FARE TABELLA PER LA PENSIONE 
-	
-	
-	@Autowired PrenotazioneHib prenotazioneDependancy;
-	
-	@GetMapping("/disponibile/{checkin}/{checkout}")
-	public List<Stanza> listaStanzaDisponibile(@PathVariable LocalDate checkin , @PathVariable LocalDate checkout){
-		
-		List<Stanza> disponibile = prenotazioneDependancy.getStanzeDisponibili(checkin, checkout);
-		
-		return disponibile;
-		
-	}
-	
-	@PostMapping("/prenota")
-	public Prenotazione prenota(
-	        @RequestBody PrenotazioneRequest request) {
 
-	    return prenotazioneDependancy.creaPrenotazione(
-	            request.getIdStanza(),
-	            request.getCheckin(),
-	            request.getCheckout(),
-	            request.getPensione(),
-	            request.getCostoPensione(),
-	            request.getTipoPrenotazione(),
-	            request.getDovePrenotazione(),
-	            request.getTipoPagamento(),
-	            request.getOspiti(),
-	            request.getServiziAggiuntivi()
-	    );
-	}
-	
-	
-	@PutMapping("/annulla/{codicePrenotazione}/{modificaOspiti}")
-	public String annulla(
-	        @PathVariable String codicePrenotazione,
-	        @PathVariable boolean modificaOspiti,
-	        @RequestBody(required = false) GestionePrenotazioneRequest request) {
+    @Autowired 
+    private PrenotazioneHib prenotazioneDependancy;
 
-		String email = null;
-		String pin = null;
-		List<Ospite> ospiti = null;
+    @GetMapping("/disponibile/{checkin}/{checkout}")
+    public List<Stanza> listaStanzaDisponibile(@PathVariable LocalDate checkin, @PathVariable LocalDate checkout) {
+        return prenotazioneDependancy.getStanzeDisponibili(checkin, checkout);
+    }
 
-		if (request != null) {
-		    email = request.getEmail();
-		    pin = request.getPin();
-		    ospiti = request.getOspiti();
-		}
+    @PostMapping("/prenota")
+    public Prenotazione prenota(@RequestBody PrenotazioneRequest request) {
+        return prenotazioneDependancy.creaPrenotazione(
+                request.getIdStanza(),
+                request.getCheckin(),
+                request.getCheckout(),
+                request.getIdPensione(),            
+                request.getTipoPrenotazione(),
+                request.getDovePrenotazione(),
+                request.getTipoPagamento(),
+                request.getOspiti(),
+                request.getServiziAggiuntivi()      
+        );
+    }
 
-		return prenotazioneDependancy.gestionePrenotazione(
-		    codicePrenotazione,
-		    modificaOspiti,
-		    email,
-		    pin,
-		    ospiti
-		);
-	}
-	
-	@PutMapping("/checkin/{codice}")
-	public String checkIn(
-	        @PathVariable String codice){
+    @PutMapping("/annulla/{codicePrenotazione}/{modificaOspiti}")
+    public String annulla(
+            @PathVariable String codicePrenotazione,
+            @PathVariable boolean modificaOspiti,
+            @RequestBody(required = false) GestionePrenotazioneRequest request) {
 
-	    return prenotazioneDependancy.checkIn(codice);
-	}
-	
-	@PutMapping("/checkout/{codice}")
-	public String checkOut(
-	        @PathVariable String codice){
+        String email = null;
+        String pin = null;
+        List<Ospite> ospiti = null;
 
-	    return prenotazioneDependancy.checkOut(codice);
-	}
-		
-		
+        if (request != null) {
+            email = request.getEmail();
+            pin = request.getPin();
+            ospiti = request.getOspiti();
+        }
+
+        return prenotazioneDependancy.gestionePrenotazione(
+                codicePrenotazione,
+                modificaOspiti,
+                email,
+                pin,
+                ospiti
+        );
+    }
+
+    @PutMapping("/checkin/{codice}")
+    public String checkIn(@PathVariable String codice) {
+        return prenotazioneDependancy.checkIn(codice);
+    }
+
+    @PutMapping("/checkout/{codice}")
+    public String checkOut(@PathVariable String codice) {
+        return prenotazioneDependancy.checkOut(codice);
+    }
 }
-

@@ -13,8 +13,7 @@ public class PrenotazioneRequest {
     private LocalDate checkin;
     private LocalDate checkout;
 
-    private String pensione;
-    private BigDecimal costoPensione;
+    private Long idPensione;
 
     private String tipoPrenotazione;
     private String dovePrenotazione;
@@ -25,7 +24,7 @@ public class PrenotazioneRequest {
     private String tipoPagamento;
 
     private List<Ospite> ospiti;
-    private List<PrenotazioneServizi> serviziAggiuntivi;
+    private List<Long> serviziAggiuntivi;
     
     
     
@@ -47,17 +46,12 @@ public class PrenotazioneRequest {
 	public void setCheckout(LocalDate checkout) {
 		this.checkout = checkout;
 	}
-	public String getPensione() {
-		return pensione;
+
+	public Long getIdPensione() {
+		return idPensione;
 	}
-	public void setPensione(String pensione) {
-		this.pensione = pensione;
-	}
-	public BigDecimal getCostoPensione() {
-		return costoPensione;
-	}
-	public void setCostoPensione(BigDecimal costoPensione) {
-		this.costoPensione = costoPensione;
+	public void setIdPensione(Long idPensione) {
+		this.idPensione = idPensione;
 	}
 	public String getTipoPrenotazione() {
 		return tipoPrenotazione;
@@ -95,10 +89,10 @@ public class PrenotazioneRequest {
 	public void setOspiti(List<Ospite> ospiti) {
 		this.ospiti = ospiti;
 	}
-	public List<PrenotazioneServizi> getServiziAggiuntivi() {
+	public List<Long> getServiziAggiuntivi() {
 		return serviziAggiuntivi;
 	}
-	public void setServiziAggiuntivi(List<PrenotazioneServizi> serviziAggiuntivi) {
+	public void setServiziAggiuntivi(List<Long> serviziAggiuntivi) {
 		this.serviziAggiuntivi = serviziAggiuntivi;
 	}
 

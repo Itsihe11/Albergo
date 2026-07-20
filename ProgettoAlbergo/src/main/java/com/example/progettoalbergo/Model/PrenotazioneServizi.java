@@ -1,9 +1,12 @@
 package com.example.progettoalbergo.Model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,20 +19,28 @@ public class PrenotazioneServizi {
 	
 	private String codice_prenotazione;
 	
-	private String servizi;
-	
-	private Double prezzi;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_servizio") 
+    private Servizio servizio;
+
+    public Servizio getServizio() {
+        return servizio;
+    }
+
+    public void setServizio(Servizio servizio) {
+        this.servizio = servizio;
+    }
+
 	
 	public PrenotazioneServizi() {
 		
 	}
 
-	public PrenotazioneServizi(Long id, String codice_prenotazione, String servizi, Double prezzi) {
+	public PrenotazioneServizi(Long id, String codice_prenotazione) {
 		super();
 		setId_prenotazione_servizi(id);
 		setCodice_prenotazione(codice_prenotazione);
-		setServizi(servizi);
-		setPrezzi(prezzi);
+
 	}
 
 	public Long getId_prenotazione_servizi() {
@@ -48,22 +59,9 @@ public class PrenotazioneServizi {
 		this.codice_prenotazione = codice_prenotazione;
 	}
 
-	public String getServizi() {
-		return servizi;
-	}
 
-	public void setServizi(String servizi) {
-		this.servizi = servizi;
-	}
 
-	public Double getPrezzi() {
-		return prezzi;
-	}
 
-	public void setPrezzi(Double prezzi) {
-		this.prezzi = prezzi;
-	}
-	
 	
 	
 }

@@ -34,8 +34,7 @@ public class PrenotazioneServizioHib {
 	public Optional<PrenotazioneServizi> modificaServizio(Long id, PrenotazioneServizi servizioDettagli) {
         return servizioRepository.findById(id).map(servizioEsistente -> {
         	servizioEsistente.setCodice_prenotazione(servizioDettagli.getCodice_prenotazione());
-        	servizioEsistente.setServizi(servizioDettagli.getServizi());
-        	servizioEsistente.setPrezzi(servizioDettagli.getPrezzi());
+        	servizioEsistente.setServizio(servizioDettagli.getServizio());
             
             return servizioRepository.save(servizioEsistente);
         });
