@@ -30,9 +30,7 @@ public class TipologiaStanzaController {
 	@GetMapping("/tipologieStanze")
 	public List<TipologiaStanza> listaTipologie() {
 
-		List<TipologiaStanza> lista = TipologiaDependency.getAllTipologiaStanze();
-
-		return lista;
+		return TipologiaDependency.getAllTipologiaStanze();
 
 	}
 

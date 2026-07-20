@@ -29,9 +29,8 @@ public class ServiziController {
 	@GetMapping("/listaServizi")
 	public List<Servizio> listaServizi() {
 
-		List<Servizio> lista = ServizioDependency.getAllServizi();
+		return ServizioDependency.getAllServizi();
 
-		return lista;
 
 	}
 

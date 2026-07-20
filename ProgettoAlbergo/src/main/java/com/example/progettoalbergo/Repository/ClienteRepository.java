@@ -3,9 +3,9 @@ package com.example.progettoalbergo.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.progettoalbergo.Model.Cliente;
+import com.example.progettoalbergo.Model.Utente;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long>{
+public interface ClienteRepository extends JpaRepository<Utente, Long>{
 
 }
