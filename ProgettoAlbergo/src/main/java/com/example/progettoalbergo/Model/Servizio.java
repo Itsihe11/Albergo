@@ -7,16 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="servizi")
+@Table(name="servizio")
 public class Servizio {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long idservizio;
 	
-	private String codice_prenotazione;
-	
-	private String servizi;
+	private String nomeservizio;
 	
 	private Double prezzi;
 	
@@ -24,36 +22,27 @@ public class Servizio {
 		
 	}
 
-	public Servizio(Long id, String codice_prenotazione, String servizi, Double prezzi) {
+	public Servizio(Long idservizio, String nomeservizio, Double prezzi) {
 		super();
-		setId_prenotazione_servizi(id);
-		setCodice_prenotazione(codice_prenotazione);
-		setServizi(servizi);
-		setPrezzi(prezzi);
+		this.idservizio = idservizio;
+		this.nomeservizio = nomeservizio;
+		this.prezzi = prezzi;
 	}
 
-	public Long getId_prenotazione_servizi() {
-		return id;
+	public Long getIdservizio() {
+		return idservizio;
 	}
 
-	public void setId_prenotazione_servizi(Long id) {
-		this.id = id;
+	public void setIdservizio(Long idservizio) {
+		this.idservizio = idservizio;
 	}
 
-	public String getCodice_prenotazione() {
-		return codice_prenotazione;
+	public String getNomeservizio() {
+		return nomeservizio;
 	}
 
-	public void setCodice_prenotazione(String codice_prenotazione) {
-		this.codice_prenotazione = codice_prenotazione;
-	}
-
-	public String getServizi() {
-		return servizi;
-	}
-
-	public void setServizi(String servizi) {
-		this.servizi = servizi;
+	public void setNomeservizio(String nomeservizio) {
+		this.nomeservizio = nomeservizio;
 	}
 
 	public Double getPrezzi() {
@@ -63,6 +52,7 @@ public class Servizio {
 	public void setPrezzi(Double prezzi) {
 		this.prezzi = prezzi;
 	}
+
 	
 	
 	
