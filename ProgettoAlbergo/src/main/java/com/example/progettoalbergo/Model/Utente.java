@@ -5,23 +5,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cliente")
-public class Cliente {
+@Table(name = "utente")
+public class Utente {
 	@Id
 	private Long idcliente;
-	private String nome;
-	private String cognome;
 	private String email;
+	private String pin;
 
-	public Cliente() {
+	public Utente() {
 
 	}
 
-	public Cliente(Long idcliente, String nome, String cognome, String email) {
+	public Utente(Long idcliente, String email, String pin) {
 		setIdcliente(idcliente);
-		setNome(nome);
-		setCognome(cognome);
 		setEmail(email);
+		setPin(pin);
 	}
 
 	public Long getIdcliente() {
@@ -32,28 +30,20 @@ public class Cliente {
 		this.idcliente = idcliente;
 	}
 
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getCognome() {
-		return cognome;
-	}
-
-	public void setCognome(String cognome) {
-		this.cognome = cognome;
-	}
-
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPin() {
+		return pin;
+	}
+
+	public void setPin(String pin) {
+		this.pin = pin;
 	}
 
 }
