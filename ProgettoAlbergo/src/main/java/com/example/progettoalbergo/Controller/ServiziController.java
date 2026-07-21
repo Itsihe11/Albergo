@@ -21,7 +21,7 @@ import com.example.progettoalbergo.Services.ServizioHib;
 @RequestMapping("api/dipendenti/servizi")
 public class ServiziController {
 
-	// DA FARE TABELLA SERVIZI
+
 
 	@Autowired
 	ServizioHib ServizioDependency;

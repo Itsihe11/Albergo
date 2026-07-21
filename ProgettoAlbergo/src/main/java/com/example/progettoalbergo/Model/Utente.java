@@ -1,6 +1,8 @@
 package com.example.progettoalbergo.Model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -8,6 +10,7 @@ import jakarta.persistence.Table;
 @Table(name = "utente")
 public class Utente {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idcliente;
 	private String email;
 	private String pin;

@@ -36,7 +36,7 @@ public class PrenotazioneStanzaHib {
         	prenotazioneStanzaEsistente.setCheckout(prenotazioneStanzaDettagli.getCheckout());
         	prenotazioneStanzaEsistente.setStanza(prenotazioneStanzaDettagli.getStanza());
         	prenotazioneStanzaEsistente.setPensione(prenotazioneStanzaDettagli.getPensione());
-        	prenotazioneStanzaEsistente.setCostoPensione(prenotazioneStanzaDettagli.getCostoPensione());
+        	prenotazioneStanzaEsistente.setPensione(prenotazioneStanzaDettagli.getPensione());
 
         	
             
