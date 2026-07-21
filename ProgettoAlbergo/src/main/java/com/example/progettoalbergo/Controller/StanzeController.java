@@ -36,7 +36,7 @@ public class StanzeController {
 		return "Stanza inserita";
 	}
 
-	@DeleteMapping("/cancellaStanza")
+	@DeleteMapping("/cancellaStanza/{id}")
 	public String cancellaStanza(@PathVariable Long id) {
 		stanzaDependency.cancellaStanza(id);
 

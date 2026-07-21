@@ -43,7 +43,7 @@ public class TipologiaStanzaController {
 
 	}
 
-	@DeleteMapping("/cancellaTipologia")
+	@DeleteMapping("/cancellaTipologia/{id}")
 	public String cancellaTipologia(@PathVariable Long id) {
 
 		TipologiaDependency.cancellaTipologiaStanza(id);
