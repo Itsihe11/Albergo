@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 public class Utente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idcliente;
+	private Long idutente;
 	private String email;
 	private String pin;
 
@@ -26,11 +26,11 @@ public class Utente {
 	}
 
 	public Long getIdcliente() {
-		return idcliente;
+		return idutente;
 	}
 
 	public void setIdcliente(Long idcliente) {
-		this.idcliente = idcliente;
+		this.idutente = idcliente;
 	}
 
 	public String getEmail() {

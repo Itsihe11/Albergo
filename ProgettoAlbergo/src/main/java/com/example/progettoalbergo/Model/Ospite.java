@@ -2,6 +2,8 @@ package com.example.progettoalbergo.Model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,8 @@ public class Ospite {
 	private String codicePrenotazione;
 	private String nome;
 	private String cognome;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date datanascita;
 
 	public Ospite() {

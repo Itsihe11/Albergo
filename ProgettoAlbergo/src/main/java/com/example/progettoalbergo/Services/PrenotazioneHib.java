@@ -16,6 +16,7 @@ import com.example.progettoalbergo.Model.PrenotazioneServizi;
 import com.example.progettoalbergo.Model.PrenotazioneStanza;
 import com.example.progettoalbergo.Model.Servizio;
 import com.example.progettoalbergo.Model.Stanza;
+import com.example.progettoalbergo.Model.Utente;
 import com.example.progettoalbergo.Repository.OspiteRepository;
 import com.example.progettoalbergo.Repository.PensioneRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneRepository;
@@ -23,6 +24,7 @@ import com.example.progettoalbergo.Repository.PrenotazioneServizioRepository;
 import com.example.progettoalbergo.Repository.PrenotazioneStanzaRepository;
 import com.example.progettoalbergo.Repository.ServizioRepository;
 import com.example.progettoalbergo.Repository.StanzaRepository;
+import com.example.progettoalbergo.Repository.UtenteRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -36,7 +38,10 @@ public class PrenotazioneHib {
     @Autowired private PrenotazioneServizioRepository prenotazioneServizioRepository;
     @Autowired private PensioneRepository pensioneRepository;
     @Autowired private ServizioRepository servizioRepository;
-
+    @Autowired
+    private UtenteRepository utenteRepository;
+    
+    
     public List<Prenotazione> getAllPrenotazione() {
         return prenotazioneRepository.findAll();
     }
@@ -200,22 +205,58 @@ public class PrenotazioneHib {
                 throw new IllegalArgumentException("Email e PIN sono obbligatori per modificare gli ospiti.");
             }
 
+            if (nuoviOspiti == null || nuoviOspiti.isEmpty()) {
+                throw new IllegalArgumentException("È necessario inserire almeno un ospite.");
+            }
+
+            // 🟢 1. CONTROLLO CAPIENZA STANZA
+            boolean isAlbergo = "ALBERGO".equalsIgnoreCase(prenotazione.getTipo_prenotazione());
+            if (isAlbergo) {
+                PrenotazioneStanza dettaglioStanza = prenotazioneStanzaRepository
+                        .findByPrenotazioneCodicePrenotazione(codice)
+                        .orElse(null);
+
+                if (dettaglioStanza != null && dettaglioStanza.getStanza() != null) {
+                    int capienzaMassima = dettaglioStanza.getStanza().getTipologia().getCapienza();
+                    
+                    if (nuoviOspiti.size() > capienzaMassima) {
+                        throw new IllegalArgumentException(
+                            "Numero ospiti inseriti (" + nuoviOspiti.size() + 
+                            ") superiore alla capienza massima della stanza (" + capienzaMassima + " posti)."
+                        );
+                    }
+                }
+            }
+
+            // 🟢 2. SALVA EMAIL E PIN SULLA PRENOTAZIONE
             prenotazione.setEmail(email);
             prenotazione.setPin(pin);
             prenotazioneRepository.save(prenotazione);
 
-            ospiteRepository.deleteAll(ospiteRepository.findByCodicePrenotazione(codice));
-
-            if (nuoviOspiti != null && !nuoviOspiti.isEmpty()) {
-                for (Ospite ospite : nuoviOspiti) {
-                    ospite.setcodicePrenotazione(codice);
-                }
-                ospiteRepository.saveAll(nuoviOspiti);
+            // 🟢 3. SE HAI UN UTENTEREPOSITORY, SALVA/AGGIORNA L'ACCOUNT UTENTE
+            if (utenteRepository != null) {
+                Utente utente = utenteRepository.findByEmail(email).orElse(new Utente());
+                utente.setEmail(email);
+                utente.setPin(pin);
+                utenteRepository.save(utente);
             }
+
+            // 🟢 4. ELIMINA I VECCHI OSPITI E FORZA IL FLUSH SUBITO (FONDAMENTALE!)
+            List<Ospite> vecchiOspiti = ospiteRepository.findByCodicePrenotazione(codice);
+            ospiteRepository.deleteAll(vecchiOspiti);
+            ospiteRepository.flush(); // 👈 Imponiamo a Hibernate di eseguire la cancellazione in DB prima dell'insert
+
+            // 🟢 5. ASSOCIA IL CODICE PRENOTAZIONE AI NUOVI OSPITI E SALVA
+            for (Ospite ospite : nuoviOspiti) {
+                // Nota: usa il setter per il codice prenotazione presente nel tuo modello Ospite
+                ospite.setcodicePrenotazione(codice); 
+            }
+            ospiteRepository.saveAll(nuoviOspiti);
 
             return "Prenotazione aggiornata con nuovi ospiti.";
         }
 
+        // Logica annullamento...
         List<Ospite> ospiti = ospiteRepository.findByCodicePrenotazione(codice);
         ospiteRepository.deleteAll(ospiti);
         prenotazione.setStato("ANNULLATA");
@@ -223,7 +264,6 @@ public class PrenotazioneHib {
 
         return "Prenotazione annullata. La caparra rimane all'hotel.";
     }
-
     @Transactional
     public String checkIn(String codice) {
         Prenotazione p = prenotazioneRepository.findById(codice)
@@ -253,4 +293,29 @@ public class PrenotazioneHib {
 
         return "Checkout completato e pagamento registrato";
     }
+    
+ // 🟢 RECUPERA LA PRENOTAZIONE INSIEME AI SUOI OSPITI
+    public Prenotazione getPrenotazioneByCodice(String codice) {
+        Prenotazione p = prenotazioneRepository.findById(codice)
+                .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata per il codice: " + codice));
+
+        // 🟢 Cerca gli ospiti nel database per questo codice e associali
+        List<Ospite> ospiti = ospiteRepository.findByCodicePrenotazione(codice);
+        p.setOspiti(ospiti);
+
+        return p;
+    }
+
+    // 🟢 FAI LA STESSA COSA NEL LOGIN UTENTE
+    public Prenotazione loginUtente(String email, String pin) {
+        Prenotazione p = prenotazioneRepository.findByEmailAndPin(email, pin)
+                .orElseThrow(() -> new IllegalArgumentException("Email o PIN errati."));
+
+        List<Ospite> ospiti = ospiteRepository.findByCodicePrenotazione(p.getCodice_prenotazione());
+        p.setOspiti(ospiti);
+
+        return p;
+    }
+    
+    
 }

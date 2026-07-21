@@ -2,6 +2,7 @@ package com.example.progettoalbergo.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,69 @@ public class PrenotazioneController {
     @Autowired
     private ServizioHib servizioDependancy;
     
+    public static class ModificaOspitiRequest {
+        private String codicePrenotazione;
+        private String emailUtente;
+        private String pinUtente;
+        private List<Ospite> ospiti;
+
+        public String getCodicePrenotazione() { return codicePrenotazione; }
+        public void setCodicePrenotazione(String codicePrenotazione) { this.codicePrenotazione = codicePrenotazione; }
+
+        public String getEmailUtente() { return emailUtente; }
+        public void setEmailUtente(String emailUtente) { this.emailUtente = emailUtente; }
+
+        public String getPinUtente() { return pinUtente; }
+        public void setPinUtente(String pinUtente) { this.pinUtente = pinUtente; }
+
+        public List<Ospite> getOspiti() { return ospiti; }
+        public void setOspiti(List<Ospite> ospiti) { this.ospiti = ospiti; }
+    }
+
+    @PutMapping("/modifica-ospiti-account")
+    public ResponseEntity<?> modificaOspitiAccount(@RequestBody ModificaOspitiRequest req) {
+        try {
+            String risultato = prenotazioneDependancy.gestionePrenotazione(
+                req.getCodicePrenotazione(),
+                true,
+                req.getEmailUtente(),
+                req.getPinUtente(),
+                req.getOspiti()
+            );
+            return ResponseEntity.ok(Map.of("message", risultato));
+        } catch (IllegalArgumentException e) {
+            // 🟢 RESTITUISCE UN JSON PULITO: {"error": "Numero ospiti..."}
+            return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Errore interno: " + e.getMessage()));
+        }
+    }
+
+    
+    
+    @GetMapping("/codice/{codice}")
+    public ResponseEntity<?> getPrenotazioneByCodice(@PathVariable String codice) {
+        try {
+            Prenotazione p = prenotazioneDependancy.getPrenotazioneByCodice(codice);
+            return ResponseEntity.ok(p);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    // 🟢 POST: /api/prenotazione/login-utente
+    @PostMapping("/login-utente")
+    public ResponseEntity<?> loginUtente(@RequestBody Map<String, String> body) {
+        try {
+            String email = body.get("email");
+            String pin = body.get("pin");
+            Prenotazione p = prenotazioneDependancy.loginUtente(email, pin);
+            return ResponseEntity.ok(p);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
     
     @GetMapping("/pensione")
     public List<Pensione> getPensioni() {

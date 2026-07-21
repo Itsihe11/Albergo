@@ -1,8 +1,11 @@
 package com.example.progettoalbergo.Model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "prenotazione")
@@ -28,6 +31,19 @@ public class Prenotazione {
 	private String stato;
 
 	private Boolean pagato;
+	
+	@Transient // Indica a JPA che non è una colonna SQL della tabella prenotazione
+    private List<Ospite> ospiti;
+
+    // 🟢 GETTER E SETTER PER OSPITI
+    public List<Ospite> getOspiti() {
+        return ospiti;
+    }
+
+    public void setOspiti(List<Ospite> ospiti) {
+        this.ospiti = ospiti;
+    }
+
 
 	public Prenotazione() {
 
