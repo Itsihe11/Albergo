@@ -34,13 +34,16 @@ public class PrenotazioneHib {
     @Autowired private PrenotazioneStanzaRepository prenotazioneStanzaRepository;
     @Autowired private OspiteRepository ospiteRepository;
     @Autowired private PrenotazioneServizioRepository prenotazioneServizioRepository;
-    
-    // NUOVI REPOSITORY
     @Autowired private PensioneRepository pensioneRepository;
     @Autowired private ServizioRepository servizioRepository;
 
     public List<Prenotazione> getAllPrenotazione() {
         return prenotazioneRepository.findAll();
+    }
+
+    // 🟢 Ritorna la lista dei servizi per popolare il Dropdown in Angular
+    public List<Servizio> getAllServizi() {
+        return servizioRepository.findAll();
     }
 
     public List<Stanza> getStanzeDisponibili(LocalDate checkIn, LocalDate checkOut) {
@@ -59,14 +62,18 @@ public class PrenotazioneHib {
                                          List<Long> idServiziAggiuntivi) { 
 
         String codicePrenotazione = UUID.randomUUID().toString();
+        
+        System.out.println("Checkin ricevuto in Java: " + checkIn);
+        System.out.println("Checkout ricevuto in Java: " + checkOut);
 
+        boolean isOnline = "online".equalsIgnoreCase(dovePrenotazione) || "web".equalsIgnoreCase(dovePrenotazione);
+        boolean isSede = "sede".equalsIgnoreCase(dovePrenotazione);
 
-        if ("online".equalsIgnoreCase(dovePrenotazione)) {
+        if (isOnline) {
             if (!"carta".equalsIgnoreCase(tipoPagamento) && !"bonifico".equalsIgnoreCase(tipoPagamento)) {
                 throw new IllegalArgumentException("Online consentiti solo carta o bonifico");
             }
-        }
-        if ("sede".equalsIgnoreCase(dovePrenotazione)) {
+        } else if (isSede) {
             if (!"carta".equalsIgnoreCase(tipoPagamento)) {
                 throw new IllegalArgumentException("In sede è consentito solo pagamento carta");
             }
@@ -77,14 +84,23 @@ public class PrenotazioneHib {
         }
 
         double calcoloCostoTotale = 0.0;
-        boolean includeStanza = "stanza".equalsIgnoreCase(tipoPrenotazione) || "stanza+spa".equalsIgnoreCase(tipoPrenotazione);
+
+        // 🟢 SOLTANTO DUE OPZIONI: ALBERGO oppure SPA
+        boolean isAlbergo = "albergo".equalsIgnoreCase(tipoPrenotazione) || "stanza".equalsIgnoreCase(tipoPrenotazione);
+        boolean isSpa = "spa".equalsIgnoreCase(tipoPrenotazione);
+
         Stanza stanza = null;
         Pensione pensione = null;
 
+        // 1. Se è prenotazione SPA, costo base d'ingresso
+        if (isSpa) {
+            calcoloCostoTotale += 200.0; // Prezzo base ingresso SPA
+        }
 
-        if (includeStanza) {
+        // 2. Se è prenotazione ALBERGO, calcolo stanza + notti + pensione
+        if (isAlbergo) {
             if (idStanza == null || checkIn == null || checkOut == null) {
-                throw new IllegalArgumentException("Dati stanza o date mancanti per una prenotazione di tipo stanza.");
+                throw new IllegalArgumentException("Dati stanza o date mancanti per la prenotazione Albergo.");
             }
             if (!checkOut.isAfter(checkIn)) {
                 throw new IllegalArgumentException("La data di checkout deve essere successiva al check-in.");
@@ -108,47 +124,41 @@ public class PrenotazioneHib {
             long numeroNotti = ChronoUnit.DAYS.between(checkIn, checkOut);
             calcoloCostoTotale += stanza.getTipologia().getPrezzo().doubleValue() * numeroNotti;
 
-
             if (idPensione != null) {
-                pensione = pensioneRepository.findById(idPensione)
-                        .orElseThrow(() -> new IllegalArgumentException("Pensione non trovata con ID: " + idPensione));
-                
-
-                calcoloCostoTotale += pensione.getPrezzo().doubleValue() * numeroNotti;
+                pensione = pensioneRepository.findById(idPensione).orElse(null);
+                if (pensione != null && pensione.getPrezzo() != null) {
+                    calcoloCostoTotale += pensione.getPrezzo().doubleValue() * numeroNotti;
+                }
             }
         }
 
-
+        // 3. CALCOLO SERVIZI AGGIUNTIVI DAL DROPDOWN
         if (idServiziAggiuntivi != null && !idServiziAggiuntivi.isEmpty()) {
             for (Long idServizio : idServiziAggiuntivi) {
                 Servizio servizio = servizioRepository.findById(idServizio)
                         .orElseThrow(() -> new IllegalArgumentException("Servizio non trovato con ID: " + idServizio));
 
-
-                if ("stanza+spa".equalsIgnoreCase(tipoPrenotazione) && "SPA".equalsIgnoreCase(servizio.getNomeservizio())) {
-                    continue;
+                if (servizio.getPrezzi() != null) {
+                    calcoloCostoTotale += servizio.getPrezzi().doubleValue();
                 }
-
-                calcoloCostoTotale += servizio.getPrezzi().doubleValue();
             }
         }
 
-
-
+        // 🟢 Salva l'entità principale Prenotazione
         Prenotazione prenotazione = new Prenotazione();
         prenotazione.setCodice_prenotazione(codicePrenotazione);
-        prenotazione.setTipo_prenotazione(tipoPrenotazione);
+        prenotazione.setTipo_prenotazione(isAlbergo ? "ALBERGO" : "SPA");
         prenotazione.setDove_prenotazione(dovePrenotazione);
         prenotazione.setTipo_pagamento(tipoPagamento);
-        prenotazione.setDeposito("online".equalsIgnoreCase(dovePrenotazione) ? calcoloCostoTotale / 10 : 0.0);
+        prenotazione.setDeposito(isOnline ? calcoloCostoTotale / 10.0 : 0.0);
         prenotazione.setCosto_totale(calcoloCostoTotale);
         prenotazione.setStato("PENDENTE");
         prenotazione.setPagato(false);
 
         prenotazioneRepository.save(prenotazione);
 
-
-        if (includeStanza && stanza != null) {
+        // 🟢 Salva Dettaglio Stanza solo se è un'esperienza ALBERGO
+        if (isAlbergo && stanza != null) {
             PrenotazioneStanza dettaglio = new PrenotazioneStanza();
             dettaglio.setPrenotazione(prenotazione);
             dettaglio.setStanza(stanza);
@@ -158,20 +168,20 @@ public class PrenotazioneHib {
             prenotazioneStanzaRepository.save(dettaglio);
         }
 
-    
+        // 🟢 Salva i Servizi Aggiuntivi collegati
         if (idServiziAggiuntivi != null && !idServiziAggiuntivi.isEmpty()) {
             for (Long idServizio : idServiziAggiuntivi) {
-                Servizio servizio = servizioRepository.findById(idServizio).get();
-                
-                PrenotazioneServizi ps = new PrenotazioneServizi();
-                ps.setCodice_prenotazione(codicePrenotazione);
-                ps.setServizio(servizio); 
-                
-                prenotazioneServizioRepository.save(ps);
+                Servizio servizio = servizioRepository.findById(idServizio).orElse(null);
+                if (servizio != null) {
+                    PrenotazioneServizi ps = new PrenotazioneServizi();
+                    ps.setCodice_prenotazione(codicePrenotazione);
+                    ps.setServizio(servizio); 
+                    prenotazioneServizioRepository.save(ps);
+                }
             }
         }
 
-   
+        // 🟢 Salva gli Ospiti
         for (Ospite ospite : ospiti) {
             ospite.setcodicePrenotazione(codicePrenotazione);
         }

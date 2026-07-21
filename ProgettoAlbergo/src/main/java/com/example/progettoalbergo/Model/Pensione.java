@@ -17,6 +17,9 @@ public class Pensione {
 	private String tipo;
 	private Double prezzo;
 
+	public Pensione() {
+    }
+	
 	public Pensione(Long idpensione, String tipo, Double prezzo) {
 		setIdpensione(idpensione);
 		setTipo(tipo);

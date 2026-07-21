@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.progettoalbergo.DTO.GestionePrenotazioneRequest;
 import com.example.progettoalbergo.DTO.PrenotazioneRequest;
 import com.example.progettoalbergo.Model.Ospite;
+import com.example.progettoalbergo.Model.Pensione;
 import com.example.progettoalbergo.Model.Prenotazione;
+import com.example.progettoalbergo.Model.Servizio; // 🟢 IMPORT AGGIUNTO
 import com.example.progettoalbergo.Model.Stanza;
+import com.example.progettoalbergo.Services.PensioneHib;
 import com.example.progettoalbergo.Services.PrenotazioneHib;
+import com.example.progettoalbergo.Services.ServizioHib;
 
 @RestController
 @RequestMapping("/api/prenotazione")
@@ -25,6 +30,30 @@ public class PrenotazioneController {
 
     @Autowired 
     private PrenotazioneHib prenotazioneDependancy;
+    
+    @Autowired
+    private PensioneHib pensioneRepository;
+    
+    
+    @Autowired
+    private ServizioHib servizioDependancy;
+    
+    
+    @GetMapping("/pensione")
+    public List<Pensione> getPensioni() {
+        return pensioneRepository.getAllPensioni();
+    }
+
+    // 🟢 NUOVO ENDPOINT: Recupera la lista dei servizi dal DB per il dropdown Angular
+    @GetMapping("/servizi")
+    public List<Servizio> getServizi() {
+        return servizioDependancy.getAllServizi();
+    }
+
+    @GetMapping("/spa/prezzo")
+    public ResponseEntity<Double> getPrezzoSpa() {
+        return ResponseEntity.ok(200.0);
+    }
 
     @GetMapping("/disponibile/{checkin}/{checkout}")
     public List<Stanza> listaStanzaDisponibile(@PathVariable LocalDate checkin, @PathVariable LocalDate checkout) {
@@ -42,7 +71,7 @@ public class PrenotazioneController {
                 request.getDovePrenotazione(),
                 request.getTipoPagamento(),
                 request.getOspiti(),
-                request.getServiziAggiuntivi()      
+                request.getServiziAggiuntivi() // Passa la List<Long> degli ID dei servizi      
         );
     }
 
