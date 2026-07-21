@@ -14,10 +14,12 @@ public class Servizio {
     @Column(name = "nomeservizio")
     private String nomeservizio;
 
-    // 🟢 MAPPA IL CAMPO CON IL NOME CORRETTO DELLA COLONNA NEL DB
-    // Se nel tuo DB MySQL la colonna si chiama "prezzo", usa name = "prezzo"
-    @Column(name = "prezzo") 
-    private Double prezzi; // puoi lasciare 'prezzi' in Java, l'importante è il name = "prezzo"
+    @Column(name = "prezzo")
+    private Double prezzi;
+
+    // 🟢 NUOVO CAMPO
+    @Column(name = "descrizione")
+    private String descrizione;
 
     public Servizio() {}
 
@@ -30,4 +32,8 @@ public class Servizio {
 
     public Double getPrezzi() { return prezzi; }
     public void setPrezzi(Double prezzi) { this.prezzi = prezzi; }
+
+    // 🟢 NUOVO
+    public String getDescrizione() { return descrizione; }
+    public void setDescrizione(String descrizione) { this.descrizione = descrizione; }
 }
