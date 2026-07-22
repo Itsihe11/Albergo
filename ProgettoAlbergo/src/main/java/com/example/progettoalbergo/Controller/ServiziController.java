@@ -43,7 +43,7 @@ public class ServiziController {
 
 	}
 
-	@DeleteMapping("/cancellaServizi")
+	@DeleteMapping("/cancellaServizi/{id}")
 	public String cancellaServizi(@PathVariable Long id) {
 
 		ServizioDependency.cancellaServizio(id);
