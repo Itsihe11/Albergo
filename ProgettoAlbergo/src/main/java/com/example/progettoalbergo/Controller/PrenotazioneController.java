@@ -92,6 +92,17 @@ public class PrenotazioneController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+    
+    @GetMapping("/{codice}/ospiti")
+    public ResponseEntity<?> getOspitiByCodicePrenotazione(@PathVariable String codice) {
+        try {
+            Prenotazione p = prenotazioneDependancy.getPrenotazioneByCodice(codice);
+            // Restituisce la lista degli ospiti legati a questa prenotazione nel DB
+            return ResponseEntity.ok(p.getOspiti());
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Ospiti non trovati: " + e.getMessage());
+        }
+    }
 
     @PostMapping("/login-utente")
     public ResponseEntity<?> loginUtente(@RequestBody Map<String, String> body) {
