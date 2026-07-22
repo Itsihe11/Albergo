@@ -11,13 +11,11 @@ public class PrenotazioneRequest {
 
     private Long idStanza;
 
-    // 🟢 Mappa sia "checkin" che "checkIn"
     @JsonProperty("checkin")
     @JsonAlias({"checkIn", "checkin"})
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkin;
 
-    // 🟢 Mappa sia "checkout" che "checkOut"
     @JsonProperty("checkout")
     @JsonAlias({"checkOut", "checkout"})
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -32,7 +30,7 @@ public class PrenotazioneRequest {
 
     public PrenotazioneRequest() {}
 
-    // GETTER & SETTER PRINCIPALI
+
     public Long getIdStanza() { return idStanza; }
     public void setIdStanza(Long idStanza) { this.idStanza = idStanza; }
 
@@ -42,7 +40,6 @@ public class PrenotazioneRequest {
     public LocalDate getCheckout() { return checkout; }
     public void setCheckout(LocalDate checkout) { this.checkout = checkout; }
 
-    // 🟢 SETTER ALTERNATIVI (per catturare camelCase da Jackson)
     @JsonProperty("checkIn")
     public void setCheckIn(LocalDate checkIn) { this.checkin = checkIn; }
 

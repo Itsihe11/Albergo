@@ -15,6 +15,5 @@ public interface UtenteRepository extends JpaRepository<Utente, Long>{
 	
 	Optional<Utente> findByEmailAndPin(String email, String pin);
 
-    // 🟢 Utile per verificare rapidamente l'esistenza dell'account
     boolean existsByEmail(String email);
 }

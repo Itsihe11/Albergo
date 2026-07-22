@@ -35,7 +35,6 @@ public class UtenteController {
 	@Autowired
 	private AdminRepository adminRepository;
 
-	// 🟢 NUOVO ENDPOINT DI LOGIN (Gestisce sia Admin che Cliente)
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> credenziali) {
 		String emailOUsername = credenziali.get("email") != null ? credenziali.get("email").trim() : "";
@@ -45,7 +44,6 @@ public class UtenteController {
 			return ResponseEntity.status(400).body(Map.of("error", "Inserisci credenziali valide!"));
 		}
 
-		// 1. Cerca nella tabella ADMIN (username + password)
 		Optional<Admin> adminOpt = adminRepository.findByUsernameAndPassword(emailOUsername, pinOPassword);
 		if (adminOpt.isPresent()) {
 			Admin admin = adminOpt.get();
@@ -56,7 +54,6 @@ public class UtenteController {
 			return ResponseEntity.ok(response);
 		}
 
-		// 2. Se non trova l'Admin, cerca nella tabella UTENTE (email + pin)
 		Optional<Utente> utenteOpt = utenteRepository.findByEmailAndPin(emailOUsername, pinOPassword);
 		if (utenteOpt.isPresent()) {
 			Utente utente = utenteOpt.get();
@@ -67,7 +64,6 @@ public class UtenteController {
 			return ResponseEntity.ok(response);
 		}
 
-		// 3. Credenziali non trovate in nessuna tabella
 		return ResponseEntity.status(400).body(Map.of("error", "Credenziali non valide o account inesistente."));
 	}
 
@@ -82,7 +78,6 @@ public class UtenteController {
 		return "Utente inserito";
 	}
 
-	// 🛠️ Corretta la rotta aggiungendo /{idcliente}
 	@DeleteMapping("/cancellaUtente/{idcliente}")
 	public String cancellaUtente(@PathVariable Long idcliente) {
 		utenteDependency.cancellaUtente(idcliente);

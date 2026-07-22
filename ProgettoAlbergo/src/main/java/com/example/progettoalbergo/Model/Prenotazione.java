@@ -32,10 +32,9 @@ public class Prenotazione {
 
 	private Boolean pagato;
 	
-	@Transient // Indica a JPA che non è una colonna SQL della tabella prenotazione
+	@Transient 
     private List<Ospite> ospiti;
 
-    // 🟢 GETTER E SETTER PER OSPITI
     public List<Ospite> getOspiti() {
         return ospiti;
     }
