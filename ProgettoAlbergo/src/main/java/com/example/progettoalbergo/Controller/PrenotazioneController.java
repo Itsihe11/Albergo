@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ import com.example.progettoalbergo.DTO.PrenotazioneRequest;
 import com.example.progettoalbergo.Model.Ospite;
 import com.example.progettoalbergo.Model.Pensione;
 import com.example.progettoalbergo.Model.Prenotazione;
-import com.example.progettoalbergo.Model.Servizio; // 🟢 IMPORT AGGIUNTO
+import com.example.progettoalbergo.Model.Servizio;
 import com.example.progettoalbergo.Model.Stanza;
 import com.example.progettoalbergo.Services.PensioneHib;
 import com.example.progettoalbergo.Services.PrenotazioneHib;
@@ -27,6 +28,7 @@ import com.example.progettoalbergo.Services.ServizioHib;
 
 @RestController
 @RequestMapping("/api/prenotazione")
+@CrossOrigin(origins = "*")
 public class PrenotazioneController {
 
     @Autowired 
@@ -34,7 +36,6 @@ public class PrenotazioneController {
     
     @Autowired
     private PensioneHib pensioneRepository;
-    
     
     @Autowired
     private ServizioHib servizioDependancy;
@@ -58,6 +59,12 @@ public class PrenotazioneController {
         public void setOspiti(List<Ospite> ospiti) { this.ospiti = ospiti; }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Prenotazione>> getAllPrenotazioni() {
+        List<Prenotazione> prenotazioni = prenotazioneDependancy.getAllPrenotazione();
+        return ResponseEntity.ok(prenotazioni);
+    }
+
     @PutMapping("/modifica-ospiti-account")
     public ResponseEntity<?> modificaOspitiAccount(@RequestBody ModificaOspitiRequest req) {
         try {
@@ -70,15 +77,12 @@ public class PrenotazioneController {
             );
             return ResponseEntity.ok(Map.of("message", risultato));
         } catch (IllegalArgumentException e) {
-            // 🟢 RESTITUISCE UN JSON PULITO: {"error": "Numero ospiti..."}
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Errore interno: " + e.getMessage()));
         }
     }
 
-    
-    
     @GetMapping("/codice/{codice}")
     public ResponseEntity<?> getPrenotazioneByCodice(@PathVariable String codice) {
         try {
@@ -89,7 +93,6 @@ public class PrenotazioneController {
         }
     }
 
-    // 🟢 POST: /api/prenotazione/login-utente
     @PostMapping("/login-utente")
     public ResponseEntity<?> loginUtente(@RequestBody Map<String, String> body) {
         try {
@@ -102,13 +105,11 @@ public class PrenotazioneController {
         }
     }
 
-    
     @GetMapping("/pensione")
     public List<Pensione> getPensioni() {
         return pensioneRepository.getAllPensioni();
     }
 
-    // 🟢 NUOVO ENDPOINT: Recupera la lista dei servizi dal DB per il dropdown Angular
     @GetMapping("/servizi")
     public List<Servizio> getServizi() {
         return servizioDependancy.getAllServizi();
@@ -135,7 +136,7 @@ public class PrenotazioneController {
                 request.getDovePrenotazione(),
                 request.getTipoPagamento(),
                 request.getOspiti(),
-                request.getServiziAggiuntivi() // Passa la List<Long> degli ID dei servizi      
+                request.getServiziAggiuntivi()
         );
     }
 
