@@ -14,8 +14,8 @@ public class Servizio {
     @Column(name = "nomeservizio")
     private String nomeservizio;
 
-    @Column(name = "prezzo")
-    private Double prezzo;
+    @Column(name = "prezzi")
+    private Double prezzi;
 
     // 🟢 NUOVO CAMPO
     @Column(name = "descrizione")
@@ -30,8 +30,8 @@ public class Servizio {
     public String getNomeservizio() { return nomeservizio; }
     public void setNomeservizio(String nomeservizio) { this.nomeservizio = nomeservizio; }
 
-    public Double getPrezzi() { return prezzo; }
-    public void setPrezzi(Double prezzo) { this.prezzo = prezzo; }
+    public Double getPrezzi() { return prezzi; }
+    public void setPrezzi(Double prezzi) { this.prezzi = prezzi; }
 
     // 🟢 NUOVO
     public String getDescrizione() { return descrizione; }
