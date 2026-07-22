@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.progettoalbergo.Model.Admin;
+import com.example.progettoalbergo.Model.Prenotazione;
 import com.example.progettoalbergo.Model.Utente;
 import com.example.progettoalbergo.Repository.AdminRepository;
 import com.example.progettoalbergo.Repository.UtenteRepository;
+import com.example.progettoalbergo.Services.PrenotazioneHib;
 import com.example.progettoalbergo.Services.UtenteHib;
 
 @RestController
@@ -35,6 +37,9 @@ public class UtenteController {
 	@Autowired
 	private AdminRepository adminRepository;
 
+	@Autowired
+	private PrenotazioneHib prenotazioneDependency;
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> credenziali) {
 		String emailOUsername = credenziali.get("email") != null ? credenziali.get("email").trim() : "";
@@ -43,6 +48,7 @@ public class UtenteController {
 		if (emailOUsername.isBlank() || pinOPassword.isBlank()) {
 			return ResponseEntity.status(400).body(Map.of("error", "Inserisci credenziali valide!"));
 		}
+
 
 		Optional<Admin> adminOpt = adminRepository.findByUsernameAndPassword(emailOUsername, pinOPassword);
 		if (adminOpt.isPresent()) {
@@ -54,6 +60,7 @@ public class UtenteController {
 			return ResponseEntity.ok(response);
 		}
 
+
 		Optional<Utente> utenteOpt = utenteRepository.findByEmailAndPin(emailOUsername, pinOPassword);
 		if (utenteOpt.isPresent()) {
 			Utente utente = utenteOpt.get();
@@ -61,6 +68,19 @@ public class UtenteController {
 			response.put("email", utente.getEmail());
 			response.put("ruolo", "CLIENTE");
 			response.put("messaggio", "Accesso Cliente effettuato");
+
+	
+			try {
+				Prenotazione p = prenotazioneDependency.loginUtente(emailOUsername, pinOPassword);
+				if (p != null) {
+					
+					response.put("codicePrenotazione", p.getCodice_prenotazione()); 
+					response.put("prenotazione", p);
+				}
+			} catch (Exception e) {
+				System.out.println("Impossibile recuperare la prenotazione: " + e.getMessage());
+			}
+
 			return ResponseEntity.ok(response);
 		}
 
