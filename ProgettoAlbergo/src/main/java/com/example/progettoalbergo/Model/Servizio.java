@@ -30,8 +30,8 @@ public class Servizio {
     public String getNomeservizio() { return nomeservizio; }
     public void setNomeservizio(String nomeservizio) { this.nomeservizio = nomeservizio; }
 
-    public Double getPrezzi() { return prezzi; }
-    public void setPrezzi(Double prezzi) { this.prezzi = prezzi; }
+    public Double getPrezzi() { return prezzo; }
+    public void setPrezzi(Double prezzo) { this.prezzo = prezzo; }
 
     // 🟢 NUOVO
     public String getDescrizione() { return descrizione; }
