@@ -3,6 +3,7 @@ package com.example.progettoalbergo.Model;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ public class Ospite {
 	private String cognome;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonProperty("dataNascita")
 	private Date datanascita;
 
 	public Ospite() {
