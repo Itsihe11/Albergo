@@ -38,9 +38,7 @@ public class PrenotazioneHib {
     @Autowired private PrenotazioneServizioRepository prenotazioneServizioRepository;
     @Autowired private PensioneRepository pensioneRepository;
     @Autowired private ServizioRepository servizioRepository;
-    @Autowired
-    private UtenteRepository utenteRepository;
-    
+    @Autowired private UtenteRepository utenteRepository;
     
     public List<Prenotazione> getAllPrenotazione() {
         return prenotazioneRepository.findAll();
@@ -74,13 +72,14 @@ public class PrenotazioneHib {
         boolean isOnline = "online".equalsIgnoreCase(dovePrenotazione) || "web".equalsIgnoreCase(dovePrenotazione);
         boolean isSede = "sede".equalsIgnoreCase(dovePrenotazione);
 
+        // 🟢 VALIDAZIONE METODI DI PAGAMENTO
         if (isOnline) {
             if (!"carta".equalsIgnoreCase(tipoPagamento) && !"bonifico".equalsIgnoreCase(tipoPagamento)) {
-                throw new IllegalArgumentException("Online consentiti solo carta o bonifico");
+                throw new IllegalArgumentException("Per le prenotazioni online/web sono consentiti solo pagamenti con carta o bonifico.");
             }
         } else if (isSede) {
-            if (!"carta".equalsIgnoreCase(tipoPagamento)) {
-                throw new IllegalArgumentException("In sede è consentito solo pagamento carta");
+            if (!"carta".equalsIgnoreCase(tipoPagamento) && !"contanti".equalsIgnoreCase(tipoPagamento)) {
+                throw new IllegalArgumentException("Per le prenotazioni in sede sono consentiti solo pagamenti con carta o contanti.");
             }
         }
 
@@ -241,14 +240,13 @@ public class PrenotazioneHib {
                 utenteRepository.save(utente);
             }
 
-            // 🟢 4. ELIMINA I VECCHI OSPITI E FORZA IL FLUSH SUBITO (FONDAMENTALE!)
+            // 🟢 4. ELIMINA I VECCHI OSPITI E FORZA IL FLUSH SUBITO
             List<Ospite> vecchiOspiti = ospiteRepository.findByCodicePrenotazione(codice);
             ospiteRepository.deleteAll(vecchiOspiti);
-            ospiteRepository.flush(); // 👈 Imponiamo a Hibernate di eseguire la cancellazione in DB prima dell'insert
+            ospiteRepository.flush();
 
             // 🟢 5. ASSOCIA IL CODICE PRENOTAZIONE AI NUOVI OSPITI E SALVA
             for (Ospite ospite : nuoviOspiti) {
-                // Nota: usa il setter per il codice prenotazione presente nel tuo modello Ospite
                 ospite.setcodicePrenotazione(codice); 
             }
             ospiteRepository.saveAll(nuoviOspiti);
@@ -264,6 +262,7 @@ public class PrenotazioneHib {
 
         return "Prenotazione annullata. La caparra rimane all'hotel.";
     }
+
     @Transactional
     public String checkIn(String codice) {
         Prenotazione p = prenotazioneRepository.findById(codice)
@@ -294,19 +293,16 @@ public class PrenotazioneHib {
         return "Checkout completato e pagamento registrato";
     }
     
- // 🟢 RECUPERA LA PRENOTAZIONE INSIEME AI SUOI OSPITI
     public Prenotazione getPrenotazioneByCodice(String codice) {
         Prenotazione p = prenotazioneRepository.findById(codice)
                 .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata per il codice: " + codice));
 
-        // 🟢 Cerca gli ospiti nel database per questo codice e associali
         List<Ospite> ospiti = ospiteRepository.findByCodicePrenotazione(codice);
         p.setOspiti(ospiti);
 
         return p;
     }
 
-    // 🟢 FAI LA STESSA COSA NEL LOGIN UTENTE
     public Prenotazione loginUtente(String email, String pin) {
         Prenotazione p = prenotazioneRepository.findByEmailAndPin(email, pin)
                 .orElseThrow(() -> new IllegalArgumentException("Email o PIN errati."));
@@ -316,6 +312,4 @@ public class PrenotazioneHib {
 
         return p;
     }
-    
-    
 }
