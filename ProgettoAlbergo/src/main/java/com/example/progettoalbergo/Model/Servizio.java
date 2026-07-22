@@ -15,7 +15,7 @@ public class Servizio {
     private String nomeservizio;
 
     @Column(name = "prezzo")
-    private Double prezzi;
+    private Double prezzo;
 
     // 🟢 NUOVO CAMPO
     @Column(name = "descrizione")

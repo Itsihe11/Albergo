@@ -19,8 +19,8 @@ public class Utente {
 
 	}
 
-	public Utente(Long idcliente, String email, String pin) {
-		setIdcliente(idcliente);
+	public Utente(Long idutente, String email, String pin) {
+		setIdcliente(idutente);
 		setEmail(email);
 		setPin(pin);
 	}
@@ -29,8 +29,8 @@ public class Utente {
 		return idutente;
 	}
 
-	public void setIdcliente(Long idcliente) {
-		this.idutente = idcliente;
+	public void setIdcliente(Long idutente) {
+		this.idutente = idutente;
 	}
 
 	public String getEmail() {
